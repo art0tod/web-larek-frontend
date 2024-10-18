@@ -39,7 +39,7 @@ export interface IOrder {
   items: Id[];
 }
 
-export interface IOrderResponse {
+export interface IOrderSuccess {
   id: Id;
   total: Price;
 }
@@ -47,8 +47,10 @@ export interface IOrderResponse {
 export interface IAPIClient {
   getProductList: () => Promise<IProductList>;
   getProductItem: (id: Id) => Promise<IProduct>;
-  createOrder: (order: IOrder) => Promise<IOrderResponse>;
+  createOrder: (order: IOrder) => Promise<IOrderSuccess>;
 }
+
+// Model
 
 export interface ICatalogModel {
   products: IProduct[];
@@ -62,6 +64,7 @@ export interface IBasketModel {
   remove: (id: Id) => void;
   clear: () => void;
   getTotal: () => Price;
+  update: (items: IProduct[]) => void;
 }
 
 export interface IOrderModel {
@@ -71,8 +74,10 @@ export interface IOrderModel {
   saveContacts: (email: string, phone: string) => void;
   setItems: (items: IProduct[]) => void;
   validateOrder: () => boolean;
-  sendOrder: () => Promise<IOrderResponse>;
+  sendOrder: () => Promise<IOrderSuccess>;
 }
+
+// View
 
 export interface IProductCardView {
   product: IProduct;
@@ -83,7 +88,7 @@ export interface IProductCardView {
 export interface IBasketView {
   items: IProduct[];
   render: () => HTMLElement;
-  update: (items: IProduct[]) => void;
+  onUpdate: (callback: () => void) => void;
   onRemove: (callback: (id: Id) => void) => void;
 }
 
@@ -110,6 +115,11 @@ export interface IAppState {
   basket: IBasketModel;
   order: IOrderModel;
   modal: IModalView | null;
+}
+
+export interface IMainPage {
+	catalog: HTMLElement[];
+  total: number;
 }
 
 export interface IApp {
