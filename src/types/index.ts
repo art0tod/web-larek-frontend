@@ -40,7 +40,6 @@ export interface IOrder {
 }
 
 export interface IOrderSuccess {
-  id: Id;
   total: Price;
 }
 
