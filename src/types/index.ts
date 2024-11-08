@@ -1,6 +1,8 @@
 // Базовые типы
 export type Id = string;
 export type Price = number;
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
+
 
 // Перечисления
 export enum Category {
@@ -44,7 +46,7 @@ export interface IOrderSuccess {
 }
 
 export interface IAPIClient {
-  getProductList: () => Promise<IProductList>;
+  getProductList: () => Promise<IProduct[]>;
   getProductItem: (id: Id) => Promise<IProduct>;
   createOrder: (order: IOrder) => Promise<IOrderSuccess>;
 }
@@ -68,6 +70,7 @@ export interface IBasketModel {
 
 export interface IOrderModel {
   orderData: IOrder;
+  total: Price;
   savePaymentMethod: (method: PaymentMethod) => void;
   saveDeliveryAddress: (address: string) => void;
   saveContacts: (email: string, phone: string) => void;
@@ -113,11 +116,12 @@ export interface IAppState {
   catalog: ICatalogModel;
   basket: IBasketModel;
   order: IOrderModel;
+  preview: string | null;
   modal: IModalView | null;
 }
 
 export interface IMainPage {
-	catalog: HTMLElement[];
+  catalog: HTMLElement[];
   total: number;
 }
 
@@ -125,4 +129,23 @@ export interface IApp {
   state: IAppState;
   api: IAPIClient;
   init: () => Promise<void>;
+}
+
+export interface IContactForm {
+  phone: string;
+  email: string;
+}
+
+export interface IOrderForm {
+  payment: string;
+  address: string;
+}
+
+export interface IOrderSuccessAction {
+  onClick: () => void;
+}
+
+export interface ICard extends IProduct {
+  index?: string;
+  buttonText: string;
 }
