@@ -4,7 +4,7 @@ import { Component } from './base/Component'
 import { IEvents } from './base/events'
 
 export class Page extends Component<IMainPage> {
-  protected _total: HTMLElement;
+  protected _counter: HTMLElement;
   protected _catalog: HTMLElement;
   protected _wrapper: HTMLElement;
   protected _basket: HTMLElement;
@@ -12,7 +12,7 @@ export class Page extends Component<IMainPage> {
   constructor(container: HTMLElement, protected events: IEvents) {
     super(container);
 
-    this._total = ensureElement('.header__basket-counter');
+    this._counter = ensureElement('.header__basket-counter');
     this._catalog = ensureElement('.gallery');
     this._wrapper = ensureElement('.page__wrapper');
     this._basket = ensureElement('.header__basket');
@@ -24,8 +24,8 @@ export class Page extends Component<IMainPage> {
     this.events.emit('basket:open')
   }
 
-  set total(value: number) {
-    this.setText(this._total, value)
+  set counter(value: number) {
+    this.setText(this._counter, value)
   }
 
   set catalog(items: HTMLElement[]) {

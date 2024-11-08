@@ -143,8 +143,8 @@ function handleBasketChanged(items: Product[]) {
   basket.toggleButton(total === 0);
 }
 
-function handleTotalChanged(item: string[]) {
-  page.total = appState.basket.length;
+function handleCounterChanged(item: string[]) {
+  page.counter = appState.basket.length;
 }
 
 function handleOrderOpen() {
@@ -244,7 +244,7 @@ events.on('basket:open', handleBasketOpen);
 events.on('order:open', handleOrderOpen);
 events.on<CatalogChangeEvent>('products:changed', handleProductsChanged);
 events.on('basket:changed', handleBasketChanged);
-events.on('total:changed', handleTotalChanged);
+events.on('counter:changed', handleCounterChanged);
 events.on('contact:open', handleContactOpen);
 events.on('formError:changed', handleFormErrorChanged);
 events.on('orderError:changed', handleOrderErrorChanged);

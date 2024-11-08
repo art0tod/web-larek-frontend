@@ -5,7 +5,7 @@ import { validate } from 'webpack';
 import { cardCategory } from '../utils/constants';
 
 interface ICardActions {
-    onClick: (event: MouseEvent) => void;
+  onClick: (event: MouseEvent) => void;
 }
 
 export class Card extends Component<ICard> {
@@ -51,7 +51,7 @@ export class Card extends Component<ICard> {
 
   set description(value: string) {
     this.setText(this._description, value);
-  } 
+  }
 
   get description(): string {
     return this._description.textContent || '';
@@ -86,5 +86,14 @@ export class Card extends Component<ICard> {
   get buttonText(): string {
     return this._button.textContent || '';
   }
-  
+
+  get price(): number | null {
+    return Number(this._price.textContent || '');
+  }
+
+  set price(value: number | null) {
+    this.setText(this._price, (value) ? `${value.toString()} синапсов` : '');
+    this.disableButton(value);
+  }
+
 }
