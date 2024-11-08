@@ -18,12 +18,6 @@ import Product from './components/Product';
 const api = new APIClient(CDN_URL, API_URL);
 const events = new EventEmitter();
 
-// Мониторинг событий
-events.onAll(({ eventName, data }) => {
-  console.log(eventName, data);
-})
-
-
 // Шаблоны
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
@@ -75,7 +69,7 @@ function scrollUnblock() {
   page.locked = false;
 }
 
-function handleCardSelect(item: Product) {
+function handlePreviewChanged(item: Product) {
   const card = new Card(cloneTemplate(cardPreviewTemplate), {
     onClick: () => {
       events.emit('product:toggle', item);
@@ -157,8 +151,7 @@ function handleOrderOpen() {
     })
   })
 
-  console.log(appState.basket, appState.order.items)
-  // appState.order.items = appState.basket.map(item => item.id);
+  appState.order.items = appState.basket.map(item => item.id);
 }
 
 function handleContactOpen() {
@@ -218,7 +211,6 @@ function handlePaymentChange(target: HTMLElement) {
     order.toggleButton(target);
     const paymentMethod = target.dataset.paymentMethod as keyof typeof PaymentMethod;
     if (paymentMethod) {
-      console.log(appState.order.payment, PaymentMethod[paymentMethod])
       appState.order.payment = PaymentMethod[paymentMethod];
     }
   }
@@ -234,11 +226,11 @@ function handleContacsthange(data: { field: keyof IContactForm, value: string })
 
 
 // Подписки на события
-events.on('card:select', handleCardSelect);
+events.on('card:select', handlePreviewChanged);
 events.on('modal:close', scrollUnblock);
 events.on('product:toggle', handleProductToggle);
 events.on('product:add', handleProductAdd);
-events.on('product:delet', handleProductDelete);
+events.on('product:delete', handleProductDelete);
 events.on('modal:open', scrollBlock);
 events.on('basket:open', handleBasketOpen);
 events.on('order:open', handleOrderOpen);
@@ -250,7 +242,7 @@ events.on('formError:changed', handleFormErrorChanged);
 events.on('orderError:changed', handleOrderErrorChanged);
 events.on('/^order\..*:change/', handleOrderChange);
 events.on('/^contacts\..*:change/', handleContacsthange);
-events.on('preview:changed', handleProductsChanged);
+events.on('preview:changed', handlePreviewChanged);
 events.on('payment:change', handlePaymentChange);
 events.on('order:ready', handleOrderReady);
 events.on('contacts:ready', handleContactReady);
@@ -261,3 +253,9 @@ events.on('order:submit', handleOrderSubmit);
 api.getProductList()
   .then(catalog => appState.setCatalog(catalog))
   .catch(err => console.log(err))
+
+
+// Мониторинг событий
+events.onAll(({ eventName, data }) => {
+  console.log(eventName, data);
+})

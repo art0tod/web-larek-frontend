@@ -100,8 +100,8 @@ export default class AppState extends Model<IAppState> {
       case 'add':
         if (!this.basket.includes(item)) this.basket.push(item);
         break;
-      case 'remove':
-        this.basket = this.basket.filter(item => item !== item);
+      case 'delete':
+        this.basket = this.basket.filter(elem => elem !== item);
         break;
     }
 
