@@ -31,7 +31,7 @@ export class Order extends Form<IOrder> {
   set address(value: string) {
     (this.container.elements.namedItem('address') as HTMLInputElement).value = value;
   }
-  
+
   toggleButton(toggle: HTMLElement) {
     this._paymentButtonCard.classList.toggle('buttton_alt-active', toggle === this._paymentButtonCard);
     this._paymentButtonCash.classList.toggle('buttton_alt-active', toggle === this._paymentButtonCash);

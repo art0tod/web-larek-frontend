@@ -48,6 +48,8 @@ const contactForm = new ContactForm(cloneTemplate(contactsTemplate), events);
 
 // Бизнес-логика
 function handleProductsChanged() {
+  console.log('evt: products:changed');
+
   page.catalog = appState.catalog.map(item => {
     const card = new Card(cloneTemplate(cardCatalogTemplate), {
       onClick: () => events.emit('card:select', item)
@@ -62,14 +64,20 @@ function handleProductsChanged() {
 }
 
 function scrollBlock() {
+  console.log('evt: modal:open')
+
   page.locked = true;
 }
 
 function scrollUnblock() {
+  console.log('evt: modal:close')
+
   page.locked = false;
 }
 
-function handlePreviewChanged(item: Product) {
+function handlePreviewUpdate(item: Product) {
+  console.log('evt: card:select, preview:changed')
+
   const card = new Card(cloneTemplate(cardPreviewTemplate), {
     onClick: () => {
       events.emit('product:toggle', item);
@@ -98,26 +106,36 @@ function handlePreviewChanged(item: Product) {
 }
 
 function handleBasketOpen() {
+  console.log('evt: basket:open');
+
   modalContainer.render({
     content: basket.render({})
   })
 }
 
 function handleProductToggle(item: Product) {
+  console.log('evt: product:toggle')
+
   appState.basket.indexOf(item) < 0
     ? events.emit('product:add', item)
     : events.emit('product:delete', item)
 }
 
 function handleProductAdd(item: Product) {
+  console.log('evt: product:add')
+
   appState.handleBasketAction('add', item);
 }
 
 function handleProductDelete(item: Product) {
+  console.log('evt: product:delete')
+
   appState.handleBasketAction('delete', item);
 }
 
 function handleBasketChanged(items: Product[]) {
+  console.log('evt: basket:changed')
+
   basket.items = items.map((item, index) => {
     const card = new Card(cloneTemplate(cardBasketTemplate), {
       onClick: () => {
@@ -138,14 +156,18 @@ function handleBasketChanged(items: Product[]) {
 }
 
 function handleCounterChanged(item: string[]) {
+  console.log('evt: counter:changed')
+
   page.counter = appState.basket.length;
 }
 
 function handleOrderOpen() {
+  console.log('evt: order:open')
+
   modalContainer.render({
     content: order.render({
       address: '',
-      payment: PaymentMethod.Card,
+      payment: PaymentMethod.card,
       valid: false,
       errors: []
     })
@@ -155,6 +177,8 @@ function handleOrderOpen() {
 }
 
 function handleContactOpen() {
+  console.log('evt: contact:open');
+
   modalContainer.render({
     content: contactForm.render({
       email: '',
@@ -166,26 +190,36 @@ function handleContactOpen() {
 }
 
 function handleFormErrorChanged(errors: Partial<IContactForm>) {
+  console.log('evt: formError:changed');
+
   const { phone, email } = errors;
   order.valid = !email && !phone;
   contactForm.errors = Object.values({ phone, email }).filter(i => !!i).join('; ')
 }
 
 function handleOrderErrorChanged(errors: Partial<IOrderForm>) {
+  console.log('evt: orderError:changed');
+
   const { payment, address } = errors;
   order.valid = !payment && !address;
   order.errors = Object.values({ payment, address }).filter(i => !!i).join('; ');
 }
 
 function handleOrderReady() {
+  console.log('evt: order:ready');
+
   order.valid = true;
 }
 
 function handleContactReady() {
+  console.log('evt: contacts:ready');
+
   contactForm.valid = true;
 }
 
 function handleOrderSubmit() {
+  console.log('evt: order:submit');
+
   api.createOrder(appState.order)
     .then((result) => {
       appState.clearBasket();
@@ -207,26 +241,31 @@ function handleOrderSubmit() {
 }
 
 function handlePaymentChange(target: HTMLElement) {
+  console.log('evt: payment:change');
+
   if (!target.classList.contains('button_alt-active')) {
     order.toggleButton(target);
-    const paymentMethod = target.dataset.paymentMethod as keyof typeof PaymentMethod;
-    if (paymentMethod) {
-      appState.order.payment = PaymentMethod[paymentMethod];
-    }
+    const paymentType = target.getAttribute('name') as keyof typeof PaymentMethod;
+    appState.order.payment = PaymentMethod[paymentType];
+    console.log(appState.order)
   }
 }
 
 function handleOrderChange(data: { field: keyof IOrderForm, value: PaymentMethod }) {
+  console.log('evt: /^order\..*:change/');
+
   appState.setOrderForm(data.field, data.value)
 }
 
 function handleContacsthange(data: { field: keyof IContactForm, value: string }) {
+  console.log('evt: /^contacts\..*:change/');
+
   appState.setContactForm(data.field, data.value)
 }
 
 
 // Подписки на события
-events.on('card:select', handlePreviewChanged);
+events.on('card:select', handlePreviewUpdate);
 events.on('modal:close', scrollUnblock);
 events.on('product:toggle', handleProductToggle);
 events.on('product:add', handleProductAdd);
@@ -242,7 +281,7 @@ events.on('formError:changed', handleFormErrorChanged);
 events.on('orderError:changed', handleOrderErrorChanged);
 events.on('/^order\..*:change/', handleOrderChange);
 events.on('/^contacts\..*:change/', handleContacsthange);
-events.on('preview:changed', handlePreviewChanged);
+events.on('preview:changed', handlePreviewUpdate);
 events.on('payment:change', handlePaymentChange);
 events.on('order:ready', handleOrderReady);
 events.on('contacts:ready', handleContactReady);

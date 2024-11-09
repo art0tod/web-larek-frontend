@@ -11,7 +11,7 @@ export default class AppState extends Model<IAppState> {
   catalog: Product[];
   basket: Product[] = [];
   order: IOrder = {
-    payment: PaymentMethod.Card,
+    payment: PaymentMethod.card,
     address: '',
     email: '',
     phone: '',
@@ -36,7 +36,7 @@ export default class AppState extends Model<IAppState> {
 
   clearOrder() {
     this.order = {
-      payment: PaymentMethod.Card,
+      payment: PaymentMethod.card,
       address: '',
       email: '',
       phone: '',
@@ -80,7 +80,7 @@ export default class AppState extends Model<IAppState> {
     if (!this.order.phone) errors.phone = 'Указажите номер телефона';
 
     this.formErrors = errors;
-    this.events.emit('formErrors:change', this.formErrors);
+    this.events.emit('formError:changed', this.formErrors);
 
     return Object.keys(errors).length === 0;
   }
@@ -90,7 +90,7 @@ export default class AppState extends Model<IAppState> {
     if (!this.order.address) errors.address = 'Укажите адрес доставки';
 
     this.formErrors = errors;
-    this.events.emit('formErrors:change', this.formErrors);
+    this.events.emit('orderError:changed', this.formErrors);
 
     return Object.keys(errors).length === 0;
   }

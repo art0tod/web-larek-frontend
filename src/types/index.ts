@@ -14,8 +14,8 @@ export enum Category {
 }
 
 export enum PaymentMethod {
-  Card = 'card',
-  Cash = 'cash'
+  card = 'card',
+  cash = 'cash'
 }
 
 export interface IProduct {
