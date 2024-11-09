@@ -33,7 +33,12 @@ export class Order extends Form<IOrder> {
   }
 
   toggleButton(toggle: HTMLElement) {
-    this._paymentButtonCard.classList.toggle('buttton_alt-active', toggle === this._paymentButtonCard);
-    this._paymentButtonCash.classList.toggle('buttton_alt-active', toggle === this._paymentButtonCash);
+    if (toggle === this._paymentButtonCard) {
+      this._paymentButtonCard.classList.add('button_alt-active');
+      this._paymentButtonCash.classList.remove('button_alt-active');
+    } else {
+      this._paymentButtonCash.classList.add('button_alt-active');
+      this._paymentButtonCard.classList.remove('button_alt-active');
+    }
   }
 }

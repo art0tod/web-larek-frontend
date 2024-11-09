@@ -25,12 +25,15 @@ export default class AppState extends Model<IAppState> {
   total: Price;
 
   refreshBasket() {
+    this.order.total = this.basket.reduce((total, item) => total + item.price, 0);
+
     this.emitChanges('counter:changed', this.basket);
     this.emitChanges('basket:changed', this.basket);
   }
 
   clearBasket() {
     this.basket = [];
+    this.basket
     this.updateBasket();
   }
 
@@ -46,6 +49,8 @@ export default class AppState extends Model<IAppState> {
   }
 
   updateBasket() {
+    this.order.total = this.basket.reduce((total, item) => total + item.price, 0);
+
     this.emitChanges('total:changed', this.basket);
     this.emitChanges('basket:changed', this.basket);
   }
@@ -63,7 +68,7 @@ export default class AppState extends Model<IAppState> {
   setContactForm(field: keyof IContactForm, value: string) {
     this.order[field] = value;
     if (this.validateContactForm()) {
-      this.events.emit('contact:ready', this.order);
+      this.events.emit('contacts:ready', this.order);
     }
   }
 

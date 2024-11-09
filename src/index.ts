@@ -38,7 +38,6 @@ const modalContainer = new Modal(ensureElement<HTMLElement>('#modal-container'),
 
 
 // Переиспользуемые части интерфейса
-const modal = document.querySelector('.modal');
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events, {
   onClick: (ev: Event) => events.emit('payment:change', ev.target)
@@ -217,13 +216,13 @@ function handleContactReady() {
   contactForm.valid = true;
 }
 
-function handleOrderSubmit() {
-  console.log('evt: order:submit');
-
+function handleContactSubmit() {
+  console.log('evt: contacts:submit', appState.order);
   api.createOrder(appState.order)
     .then((result) => {
       appState.clearBasket();
       appState.clearOrder();
+      page.counter = appState.basket.length;
       const success = new Success(cloneTemplate(successOrderTemplate), {
         onClick: () => {
           modalContainer.close();
@@ -257,10 +256,14 @@ function handleOrderChange(data: { field: keyof IOrderForm, value: PaymentMethod
   appState.setOrderForm(data.field, data.value)
 }
 
-function handleContacsthange(data: { field: keyof IContactForm, value: string }) {
+function handleContactsChange(data: { field: keyof IContactForm, value: string }) {
   console.log('evt: /^contacts\..*:change/');
 
   appState.setContactForm(data.field, data.value)
+}
+
+function handleOrderSubmit() {
+  events.emit('contact:open');
 }
 
 
@@ -279,14 +282,14 @@ events.on('counter:changed', handleCounterChanged);
 events.on('contact:open', handleContactOpen);
 events.on('formError:changed', handleFormErrorChanged);
 events.on('orderError:changed', handleOrderErrorChanged);
-events.on('/^order\..*:change/', handleOrderChange);
-events.on('/^contacts\..*:change/', handleContacsthange);
+events.on(/^order\..*:change/, handleOrderChange);
+events.on(/^contacts\..*:change/, handleContactsChange);
 events.on('preview:changed', handlePreviewUpdate);
 events.on('payment:change', handlePaymentChange);
 events.on('order:ready', handleOrderReady);
 events.on('contacts:ready', handleContactReady);
 events.on('order:submit', handleOrderSubmit);
-
+events.on('contacts:submit', handleContactSubmit);
 
 // Получение всех товаров с сервера
 api.getProductList()
