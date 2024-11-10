@@ -250,6 +250,9 @@ events.on('order:ready', handleOrderReady);
 events.on('contacts:ready', handleContactReady);
 events.on('order:submit', handleOrderSubmit);
 events.on('contacts:submit', handleContactSubmit);
+events.on('contacts:error', () => {
+  contactForm.valid = false;
+});
 
 // Получение всех товаров с сервера
 api.getProductList()

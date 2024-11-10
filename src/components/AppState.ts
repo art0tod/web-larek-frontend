@@ -67,7 +67,9 @@ export default class AppState extends Model<IAppState> {
 
   setContactForm(field: keyof IContactForm, value: string) {
     this.order[field] = value;
-    if (this.validateContactForm()) {
+
+    this.validateContactForm();
+    if (Object.keys(this.formErrors).length === 0) {
       this.events.emit('contacts:ready', this.order);
     }
   }
@@ -87,7 +89,14 @@ export default class AppState extends Model<IAppState> {
     this.formErrors = errors;
     this.events.emit('formError:changed', this.formErrors);
 
-    return Object.keys(errors).length === 0;
+    const isValid = Object.keys(errors).length === 0;
+    if (isValid) {
+      this.events.emit('contacts:ready', this.order);
+    } else {
+      this.events.emit('contacts:error');
+    }
+
+    return isValid;
   }
 
   validateOrderForm() {
