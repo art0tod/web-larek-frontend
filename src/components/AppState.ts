@@ -8,8 +8,8 @@ export type CatalogChangeEvent = {
 }
 
 export default class AppState extends Model<IAppState> {
-  catalog: Product[];
-  basket: Product[] = [];
+  catalog: IProduct[];
+  basket: IProduct[] = [];
   order: IOrder = {
     payment: PaymentMethod.card,
     address: '',
@@ -60,7 +60,7 @@ export default class AppState extends Model<IAppState> {
     this.emitChanges('products:changed', { catalog: this.catalog })
   }
 
-  setPreview(product: Product) {
+  setPreview(product: IProduct) {
     this.preview = product.id;
     this.emitChanges('preview:changed');
   }
