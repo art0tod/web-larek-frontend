@@ -85,6 +85,7 @@ yarn build
 - `contacts:ready` - форма контактов готова
 - `formError:changed` - изменение ошибок в форме
 - `/^contacts\..*:change/` - изменение любого поля контактов
+- `contacts:error` - обнаружение ошибки
 
 ### Модальное окно
 
