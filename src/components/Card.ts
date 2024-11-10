@@ -74,8 +74,16 @@ export class Card extends Component<ICard> {
   }
 
   set category(value: Category) {
-    this.setText(this._category, value);
-    this._category.classList.add(cardCategory[value]);
+    if (this._category) {
+      // Сначала удаляем все возможные классы категорий
+      Object.values(cardCategory).forEach(className => {
+        this._category.classList.remove(className);
+      });
+
+      // Затем устанавливаем текст и добавляем нужный класс
+      this.setText(this._category, value);
+      this._category.classList.add(cardCategory[value]);
+    }
   }
 
   set image(value: string) {
